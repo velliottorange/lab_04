@@ -74,4 +74,170 @@ As noted previously, some La Quinta locations in the dataset are outside the Uni
 
 ### Exercise 8
 
+A new variable country was added to the La Quinta dataset using mutate() and case_when().All locations in U.S. states were set to "United States", while all other locations were set to "China" based on notes from the previous exercise.
+
+```{laquinta_country}
+laquinta <- laquinta %>%
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",  # all U.S. states
+    TRUE ~ "China"                           # all other locations
+  ))
+```
+
+The dataset was then filtered to include only U.S. locations so that future analysis will focus on domestic La Quinta hotels.
+
+```{laquinta_murica}
+laquinta <- laquinta %>%
+  filter(country == "United States")
+```
+
+After adding the country variable and filtering for U.S. locations, the La Quinta dataset contains 895 observations. This confirms that only domestic locations remain for analysis, while international locations (e.g., in China) have been excluded.
+
+```{laquinta_murica_number}
+table(laquinta$country)
+```
+
 ### Exercise 9
+
+The number of locations for each Denny’s and La Quinta was counted by state using count(). I then joined these counts with the states dataset to include the full state names and geographic area (in square miles).
+
+```{dennys_with_area}
+dennys_with_area <- dennys %>%
+  count(state) %>%  # Count number of Denny's locations per state
+  inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
+
+dennys_with_area
+```
+
+```{laquinta_with_area}
+laquinta_with_area <- laquinta %>%
+  count(state) %>%  # Count number of La Quinta locations per state
+  inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
+
+laquinta_with_area
+```
+
+### Exercise 10
+
+After adjusting for state size, the District of Columbia has the highest density of Denny’s locations, followed by small states such as Rhode Island and Connecticut. For La Quinta, Rhode Island and Florida rank highest in locations per thousand square miles. This pattern is expected, as smaller states and densely populated areas tend to have higher location densities than larger states with more dispersed populations.Notably, Rhode Island ranks highly for both Denny’s and La Quinta, indicating a strong presence of both establishments relative to the state’s geographic size. I decided to Google where Mitch Hedberg is/was from, wondering if he might be from Rhode Island. Nope. Saint Paul, MN. He did, however, do a show at the University of Rhode Island in 2004.
+
+```{dennys_density}
+dennys_density <- dennys_with_area %>%
+  mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
+  arrange(desc(locations_per_1000_sq_miles))
+
+dennys_density
+```
+
+```{laquinta_density}
+laquinta_density <- laquinta_with_area %>%
+  mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
+  arrange(desc(locations_per_1000_sq_miles))
+
+laquinta_density
+```
+
+### Exercise 11
+
+In North Carolina, there are 31 cities with at least one Denny’s or La Quinta location. Of these, only 3 cities have both establishments, meaning that roughly 10% of the cities contain both. Visually, the scatter plot shows some locations that are fairly close together, but true co-location within the same city is relatively rare. Based on this data, Mitch Hedberg’s joke that “La Quinta means next to a Denny’s” only occasionally holds in North Carolina. That said, one city in which both establishments are present is good ol' Winston-Salem.
+
+```{r nc_plot}
+
+# Add establishment identifiers
+dennys <- dennys %>%
+  mutate(establishment = "Denny's")
+
+laquinta <- laquinta %>%
+  mutate(establishment = "La Quinta")
+
+# Combine datasets
+dn_lq <- bind_rows(dennys, laquinta)
+
+# Filter combined data to North Carolina
+dn_lq_nc <- dn_lq %>%
+  filter(state == "NC") %>%
+  mutate(city = str_trim(city))  # Remove extra spaces/newlines
+
+# Plot locations with transparency
+ggplot(dn_lq_nc, aes(
+  x = longitude,
+  y = latitude,
+  color = establishment
+)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = "Denny’s and La Quinta Locations in North Carolina",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Establishment"
+  )
+```
+
+```{r nc_overlap_analysis}
+# Count locations by establishment
+dn_lq_nc %>%
+  count(establishment)
+
+# Check city-level overlap between establishments
+city_overlap_nc <- dn_lq_nc %>%
+  distinct(city, establishment) %>%
+  count(city) %>%
+  arrange(desc(n))
+
+city_overlap_nc
+
+# Summarize overlap proportion
+city_overlap_nc %>%
+  summarise(
+    total_cities = n(),
+    cities_with_both = sum(n == 2),
+    proportion_with_both = mean(n == 2)
+  )
+```
+
+### Exercise 12
+
+In Texas, there are 199 cities with at least one Denny’s or La Quinta location. Of these, 67 cities have both establishments, meaning that about one-third of the cities contain both. The scatter plot shows that many of these locations are quite close together, supporting Mitch Hedberg’s joke that “La Quinta means next to a Denny’s” more often in Texas than in North Carolina.
+
+```{r tx_plot}
+# Filter combined data to Texas
+dn_lq_tx <- dn_lq %>%
+  filter(state == "TX") %>%
+  mutate(city = str_trim(city))  # Remove extra spaces/newlines
+
+# Plot locations with transparency
+ggplot(dn_lq_tx, aes(
+  x = longitude,
+  y = latitude,
+  color = establishment
+)) +
+  geom_point(alpha = 0.6) +
+  labs(
+    title = "Denny’s and La Quinta Locations in Texas",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Establishment"
+  )
+```
+
+```{r tx_overlap_analysis}
+# Count locations by establishment
+dn_lq_tx %>%
+  count(establishment)
+
+# Check city-level overlap between establishments
+city_overlap_tx <- dn_lq_tx %>%
+  distinct(city, establishment) %>%
+  count(city) %>%
+  arrange(desc(n))
+
+city_overlap_tx
+
+# Summarize overlap proportion
+city_overlap_tx %>%
+  summarise(
+    total_cities = n(),
+    cities_with_both = sum(n == 2),
+    proportion_with_both = mean(n == 2)
+  )
+```
