@@ -18,21 +18,29 @@ states <- read_csv("data/states.csv")
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+The Denny’s dataset has 1,643 rows and 6 columns. Each row represents a single Denny’s restaurant location in the United States. The variables include the restaurant’s address, city, state, ZIP code, and geographic coordinates (longitude and latitude).
+
+```{dennys_data}
+nrow(dennys)
+ncol(dennys)
+glimpse(dennys)
+```
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 2 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+The La Quinta dataset has 909 rows and 6 columns. Each row represents a single La Quinta hotel location. The variables include the hotel’s address, city, state, ZIP code, and geographic coordinates (longitude and latitude).
+
+```{laquinta_data}
+nrow(laquinta)
+ncol(laquinta)
+glimpse(laquinta)
+```
 
 ### Exercise 3
 
-...
+According to the La Quinta website, there are several La Quinta locations outside of the United States. These international locations are located in China, including cities such as Chengdu, Qionghai, Suzhou, Taiyuan, Turpan, Weifang, and Zunyi.
+
+The Denny’s website indicates that Denny’s has 1259 locations within the United States, though it was only through the power of Google that I found international locations, including restaurants in Canada, Mexico, and Puerto Rico (though PR is technically domestic). That same Google search revealed that Denny's started as a donut stand in Lakewood, CA in 1953. The more you know.
 
 ### Exercise 4
 
