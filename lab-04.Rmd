@@ -44,16 +44,34 @@ The Denny’s website indicates that Denny’s has 1259 locations within the Uni
 
 ### Exercise 4
 
-...
+Using only the data, I can think of several potential ways to determine whether either establishment has locations outside of the United States. One approach would be to examine the state variable and check whether all values correspond to valid U.S. state abbreviations. Any entries that do not match U.S. states could indicate international locations. Unless that abbreviation is "NA," of course.
+
+Another possible approach would be to use the longitude and latitude variables to see whether any locations fall outside the geographic boundaries of the United States. Locations with coordinates far outside U.S. ranges may suggest international restaurants.
+
+A third option would be to check ZIP codes and identify any values that do not conform to the standard U.S. ZIP code format. An alpanumeric zip code, for instance, may indicate a restaurant located in Canada.
 
 ### Exercise 5
 
-...
+Filtering the Denny’s dataset for locations with a state not in states$abbreviation shows no rows, indicating that all Denny’s restaurants in this dataset are located in the United States. That is,there are no international locations included in the dataset.
+
+```{dennys_filter}
+dennys %>%
+  filter(!(state %in% states$abbreviation))
+```
 
 ### Exercise 6
 
-...
+A new variable country was added to the Denny’s dataset using mutate(). All observations were set to "United States". The dataset now includes seven variables, with country representing the country for each restaurant.
 
- 
-Add exercise headings as needed.
+```{dennys_murica}
+dennys <- dennys %>%
+  mutate(country = "United States")
+```
 
+### Exercise 7
+
+As noted previously, some La Quinta locations in the dataset are outside the United States. Based on the La Quinta website, these international locations are in China, including cities such as Chengdu, Qionghai, Suzhou, Taiyuan, Turpan, Weifang, and Zunyi.
+
+### Exercise 8
+
+### Exercise 9
