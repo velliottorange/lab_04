@@ -1,7 +1,7 @@
 ---
 title: "Lab 04 - La Quinta is Spanish for next to Denny's, Pt. 1"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Verity Elliott"
+date: "01_31_2026"
 output: github_document
 ---
 
@@ -241,3 +241,4 @@ city_overlap_tx %>%
     proportion_with_both = mean(n == 2)
   )
 ```
+
