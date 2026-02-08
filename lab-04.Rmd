@@ -20,7 +20,7 @@ states <- read_csv("data/states.csv")
 
 The Denny’s dataset has 1,643 rows and 6 columns. Each row represents a single Denny’s restaurant location in the United States. The variables include the restaurant’s address, city, state, ZIP code, and geographic coordinates (longitude and latitude).
 
-```{dennys_data}
+```{r dennys_data}
 nrow(dennys)
 ncol(dennys)
 glimpse(dennys)
