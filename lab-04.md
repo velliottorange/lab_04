@@ -1,7 +1,7 @@
 Lab 04 - La Quinta is Spanish for next to Denny’s, Pt. 1
 ================
-Insert your name here
-Insert date here
+Verity Elliott
+01_31_2026
 
 ### Load packages and data
 
@@ -21,11 +21,30 @@ single Denny’s restaurant location in the United States. The variables
 include the restaurant’s address, city, state, ZIP code, and geographic
 coordinates (longitude and latitude).
 
-``` dennys_data
+``` r
 nrow(dennys)
+```
+
+    ## [1] 1643
+
+``` r
 ncol(dennys)
+```
+
+    ## [1] 6
+
+``` r
 glimpse(dennys)
 ```
+
+    ## Rows: 1,643
+    ## Columns: 6
+    ## $ address   <chr> "2900 Denali", "3850 Debarr Road", "1929 Airport Way", "230 …
+    ## $ city      <chr> "Anchorage", "Anchorage", "Fairbanks", "Auburn", "Birmingham…
+    ## $ state     <chr> "AK", "AK", "AK", "AL", "AL", "AL", "AL", "AL", "AL", "AL", …
+    ## $ zip       <chr> "99503", "99508", "99701", "36849", "35207", "35294", "35056…
+    ## $ longitude <dbl> -149.8767, -149.8090, -147.7600, -85.4681, -86.8317, -86.803…
+    ## $ latitude  <dbl> 61.1953, 61.2097, 64.8366, 32.6033, 33.5615, 33.5007, 34.206…
 
 ### Exercise 2
 
@@ -34,11 +53,30 @@ single La Quinta hotel location. The variables include the hotel’s
 address, city, state, ZIP code, and geographic coordinates (longitude
 and latitude).
 
-``` laquinta_data
+``` r
 nrow(laquinta)
+```
+
+    ## [1] 909
+
+``` r
 ncol(laquinta)
+```
+
+    ## [1] 6
+
+``` r
 glimpse(laquinta)
 ```
+
+    ## Rows: 909
+    ## Columns: 6
+    ## $ address   <chr> "793 W. Bel Air Avenue", "3018 CatClaw Dr", "3501 West Lake …
+    ## $ city      <chr> "\nAberdeen", "\nAbilene", "\nAbilene", "\nAcworth", "\nAda"…
+    ## $ state     <chr> "MD", "TX", "TX", "GA", "OK", "TX", "AG", "TX", "NM", "NM", …
+    ## $ zip       <chr> "21001", "79606", "79601", "30102", "74820", "75254", "20345…
+    ## $ longitude <dbl> -76.18846, -99.77877, -99.72269, -84.65609, -96.63652, -96.8…
+    ## $ latitude  <dbl> 39.52322, 32.41349, 32.49136, 34.08204, 34.78180, 32.95164, …
 
 ### Exercise 3
 
@@ -79,10 +117,14 @@ states\$abbreviation shows no rows, indicating that all Denny’s
 restaurants in this dataset are located in the United States. That
 is,there are no international locations included in the dataset.
 
-``` dennys_filter
+``` r
 dennys %>%
   filter(!(state %in% states$abbreviation))
 ```
+
+    ## # A tibble: 0 × 6
+    ## # ℹ 6 variables: address <chr>, city <chr>, state <chr>, zip <chr>,
+    ## #   longitude <dbl>, latitude <dbl>
 
 ### Exercise 6
 
@@ -91,7 +133,7 @@ All observations were set to “United States”. The dataset now includes
 seven variables, with country representing the country for each
 restaurant.
 
-``` dennys_murica
+``` r
 dennys <- dennys %>%
   mutate(country = "United States")
 ```
@@ -110,7 +152,7 @@ and case_when().All locations in U.S. states were set to “United
 States”, while all other locations were set to “China” based on notes
 from the previous exercise.
 
-``` laquinta_country
+``` r
 laquinta <- laquinta %>%
   mutate(country = case_when(
     state %in% state.abb ~ "United States",  # all U.S. states
@@ -121,7 +163,7 @@ laquinta <- laquinta %>%
 The dataset was then filtered to include only U.S. locations so that
 future analysis will focus on domestic La Quinta hotels.
 
-``` laquinta_murica
+``` r
 laquinta <- laquinta %>%
   filter(country == "United States")
 ```
@@ -131,9 +173,13 @@ La Quinta dataset contains 895 observations. This confirms that only
 domestic locations remain for analysis, while international locations
 (e.g., in China) have been excluded.
 
-``` laquinta_murica_number
+``` r
 table(laquinta$country)
 ```
+
+    ## 
+    ## United States 
+    ##           895
 
 ### Exercise 9
 
@@ -141,7 +187,7 @@ The number of locations for each Denny’s and La Quinta was counted by
 state using count(). I then joined these counts with the states dataset
 to include the full state names and geographic area (in square miles).
 
-``` dennys_with_area
+``` r
 dennys_with_area <- dennys %>%
   count(state) %>%  # Count number of Denny's locations per state
   inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
@@ -149,13 +195,43 @@ dennys_with_area <- dennys %>%
 dennys_with_area
 ```
 
-``` laquinta_with_area
+    ## # A tibble: 51 × 4
+    ##    state     n name                     area
+    ##    <chr> <int> <chr>                   <dbl>
+    ##  1 AK        3 Alaska               665384. 
+    ##  2 AL        7 Alabama               52420. 
+    ##  3 AR        9 Arkansas              53179. 
+    ##  4 AZ       83 Arizona              113990. 
+    ##  5 CA      403 California           163695. 
+    ##  6 CO       29 Colorado             104094. 
+    ##  7 CT       12 Connecticut            5543. 
+    ##  8 DC        2 District of Columbia     68.3
+    ##  9 DE        1 Delaware               2489. 
+    ## 10 FL      140 Florida               65758. 
+    ## # ℹ 41 more rows
+
+``` r
 laquinta_with_area <- laquinta %>%
   count(state) %>%  # Count number of La Quinta locations per state
   inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
 
 laquinta_with_area
 ```
+
+    ## # A tibble: 48 × 4
+    ##    state     n name           area
+    ##    <chr> <int> <chr>         <dbl>
+    ##  1 AK        2 Alaska      665384.
+    ##  2 AL       16 Alabama      52420.
+    ##  3 AR       13 Arkansas     53179.
+    ##  4 AZ       18 Arizona     113990.
+    ##  5 CA       56 California  163695.
+    ##  6 CO       27 Colorado    104094.
+    ##  7 CT        6 Connecticut   5543.
+    ##  8 FL       74 Florida      65758.
+    ##  9 GA       41 Georgia      59425.
+    ## 10 IA        4 Iowa         56273.
+    ## # ℹ 38 more rows
 
 ### Exercise 10
 
@@ -172,7 +248,7 @@ is/was from, wondering if he might be from Rhode Island. Nope. Saint
 Paul, MN. He did, however, do a show at the University of Rhode Island
 in 2004.
 
-``` dennys_density
+``` r
 dennys_density <- dennys_with_area %>%
   mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
   arrange(desc(locations_per_1000_sq_miles))
@@ -180,13 +256,43 @@ dennys_density <- dennys_with_area %>%
 dennys_density
 ```
 
-``` laquinta_density
+    ## # A tibble: 51 × 5
+    ##    state     n name                     area locations_per_1000_sq_miles
+    ##    <chr> <int> <chr>                   <dbl>                       <dbl>
+    ##  1 DC        2 District of Columbia     68.3                      29.3  
+    ##  2 RI        5 Rhode Island           1545.                        3.24 
+    ##  3 CA      403 California           163695.                        2.46 
+    ##  4 CT       12 Connecticut            5543.                        2.16 
+    ##  5 FL      140 Florida               65758.                        2.13 
+    ##  6 MD       26 Maryland              12406.                        2.10 
+    ##  7 NJ       10 New Jersey             8723.                        1.15 
+    ##  8 NY       56 New York              54555.                        1.03 
+    ##  9 IN       37 Indiana               36420.                        1.02 
+    ## 10 OH       44 Ohio                  44826.                        0.982
+    ## # ℹ 41 more rows
+
+``` r
 laquinta_density <- laquinta_with_area %>%
   mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
   arrange(desc(locations_per_1000_sq_miles))
 
 laquinta_density
 ```
+
+    ## # A tibble: 48 × 5
+    ##    state     n name             area locations_per_1000_sq_miles
+    ##    <chr> <int> <chr>           <dbl>                       <dbl>
+    ##  1 RI        2 Rhode Island    1545.                       1.29 
+    ##  2 FL       74 Florida        65758.                       1.13 
+    ##  3 CT        6 Connecticut     5543.                       1.08 
+    ##  4 MD       13 Maryland       12406.                       1.05 
+    ##  5 TX      237 Texas         268596.                       0.882
+    ##  6 TN       30 Tennessee      42144.                       0.712
+    ##  7 GA       41 Georgia        59425.                       0.690
+    ##  8 NJ        5 New Jersey      8723.                       0.573
+    ##  9 MA        6 Massachusetts  10554.                       0.568
+    ## 10 LA       28 Louisiana      52378.                       0.535
+    ## # ℹ 38 more rows
 
 ### Exercise 11
 

@@ -20,7 +20,7 @@ states <- read_csv("data/states.csv")
 
 The Denny’s dataset has 1,643 rows and 6 columns. Each row represents a single Denny’s restaurant location in the United States. The variables include the restaurant’s address, city, state, ZIP code, and geographic coordinates (longitude and latitude).
 
-```{dennys_data}
+```{r dennys_data}
 nrow(dennys)
 ncol(dennys)
 glimpse(dennys)
@@ -30,7 +30,7 @@ glimpse(dennys)
 
 The La Quinta dataset has 909 rows and 6 columns. Each row represents a single La Quinta hotel location. The variables include the hotel’s address, city, state, ZIP code, and geographic coordinates (longitude and latitude).
 
-```{laquinta_data}
+```{r laquinta_data}
 nrow(laquinta)
 ncol(laquinta)
 glimpse(laquinta)
@@ -54,7 +54,7 @@ A third option would be to check ZIP codes and identify any values that do not c
 
 Filtering the Denny’s dataset for locations with a state not in states$abbreviation shows no rows, indicating that all Denny’s restaurants in this dataset are located in the United States. That is,there are no international locations included in the dataset.
 
-```{dennys_filter}
+```{r dennys_filter}
 dennys %>%
   filter(!(state %in% states$abbreviation))
 ```
@@ -63,7 +63,7 @@ dennys %>%
 
 A new variable country was added to the Denny’s dataset using mutate(). All observations were set to "United States". The dataset now includes seven variables, with country representing the country for each restaurant.
 
-```{dennys_murica}
+```{r dennys_murica}
 dennys <- dennys %>%
   mutate(country = "United States")
 ```
@@ -76,7 +76,7 @@ As noted previously, some La Quinta locations in the dataset are outside the Uni
 
 A new variable country was added to the La Quinta dataset using mutate() and case_when().All locations in U.S. states were set to "United States", while all other locations were set to "China" based on notes from the previous exercise.
 
-```{laquinta_country}
+```{r laquinta_country}
 laquinta <- laquinta %>%
   mutate(country = case_when(
     state %in% state.abb ~ "United States",  # all U.S. states
@@ -86,14 +86,14 @@ laquinta <- laquinta %>%
 
 The dataset was then filtered to include only U.S. locations so that future analysis will focus on domestic La Quinta hotels.
 
-```{laquinta_murica}
+```{r laquinta_murica}
 laquinta <- laquinta %>%
   filter(country == "United States")
 ```
 
 After adding the country variable and filtering for U.S. locations, the La Quinta dataset contains 895 observations. This confirms that only domestic locations remain for analysis, while international locations (e.g., in China) have been excluded.
 
-```{laquinta_murica_number}
+```{r laquinta_murica_number}
 table(laquinta$country)
 ```
 
@@ -101,7 +101,7 @@ table(laquinta$country)
 
 The number of locations for each Denny’s and La Quinta was counted by state using count(). I then joined these counts with the states dataset to include the full state names and geographic area (in square miles).
 
-```{dennys_with_area}
+```{r dennys_with_area}
 dennys_with_area <- dennys %>%
   count(state) %>%  # Count number of Denny's locations per state
   inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
@@ -109,7 +109,7 @@ dennys_with_area <- dennys %>%
 dennys_with_area
 ```
 
-```{laquinta_with_area}
+```{r laquinta_with_area}
 laquinta_with_area <- laquinta %>%
   count(state) %>%  # Count number of La Quinta locations per state
   inner_join(states, by = c("state" = "abbreviation"))  # Join state area info
@@ -121,7 +121,7 @@ laquinta_with_area
 
 After adjusting for state size, the District of Columbia has the highest density of Denny’s locations, followed by small states such as Rhode Island and Connecticut. For La Quinta, Rhode Island and Florida rank highest in locations per thousand square miles. This pattern is expected, as smaller states and densely populated areas tend to have higher location densities than larger states with more dispersed populations.Notably, Rhode Island ranks highly for both Denny’s and La Quinta, indicating a strong presence of both establishments relative to the state’s geographic size. I decided to Google where Mitch Hedberg is/was from, wondering if he might be from Rhode Island. Nope. Saint Paul, MN. He did, however, do a show at the University of Rhode Island in 2004.
 
-```{dennys_density}
+```{r dennys_density}
 dennys_density <- dennys_with_area %>%
   mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
   arrange(desc(locations_per_1000_sq_miles))
@@ -129,7 +129,7 @@ dennys_density <- dennys_with_area %>%
 dennys_density
 ```
 
-```{laquinta_density}
+```{r laquinta_density}
 laquinta_density <- laquinta_with_area %>%
   mutate(locations_per_1000_sq_miles = n / (area / 1000)) %>%
   arrange(desc(locations_per_1000_sq_miles))
